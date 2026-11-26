@@ -1,0 +1,46 @@
+/* Northstar premium motion layer — lightweight, responsive and reduced-motion aware */
+:root {
+  --motion-accent: #65d7ff;
+  --motion-accent-2: #8b7cff;
+  --motion-shadow: 0 18px 50px rgba(4, 13, 34, .22);
+}
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+body.motion-ready { animation: motion-page-in .65s cubic-bezier(.2,.75,.25,1) both; }
+@keyframes motion-page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+:where(.card, .stat-card, .dashboard-card, .balance-card, .summary-card, .feature-card, .panel, .transaction-card) {
+  transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease, background-color .28s ease;
+  will-change: transform;
+}
+:where(.card, .stat-card, .dashboard-card, .balance-card, .summary-card, .feature-card, .panel, .transaction-card):hover {
+  transform: translateY(-5px);
+  box-shadow: var(--motion-shadow), 0 0 0 1px rgba(101,215,255,.12);
+  border-color: rgba(101,215,255,.32);
+}
+:where(button, .btn, input[type="submit"], a.button, .button) {
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+:where(button, .btn, input[type="submit"], a.button, .button):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.07);
+  box-shadow: 0 9px 26px rgba(44, 130, 220, .2);
+}
+:where(button, .btn, input[type="submit"], a.button, .button):active { transform: translateY(0) scale(.985); }
+.motion-reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s cubic-bezier(.2,.75,.25,1); }
+.motion-reveal.motion-visible { opacity: 1; transform: translateY(0); }
+.motion-ripple {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  background: rgba(255,255,255,.35); transform: scale(0);
+  animation: motion-ripple .55s ease-out forwards;
+}
+@keyframes motion-ripple { to { transform: scale(4); opacity: 0; } }
+:where(nav a, .nav-link, .sidebar a) { transition: color .2s ease, background .2s ease, transform .2s ease; }
+:where(nav a, .nav-link, .sidebar a):hover { transform: translateX(3px); }
+:where(input, select, textarea) { transition: border-color .2s ease, box-shadow .2s ease; }
+:where(input, select, textarea):focus { outline: none; box-shadow: 0 0 0 3px rgba(101,215,255,.14); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .motion-reveal { opacity: 1; transform: none; }
+}
