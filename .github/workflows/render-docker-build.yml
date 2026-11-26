@@ -1,0 +1,15 @@
+name: Verify Render Docker build
+
+on:
+  push:
+    branches: [render-deploy]
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Build application image
+        run: docker build -t bank-management-web:ci .
