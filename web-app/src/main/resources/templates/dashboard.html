@@ -1,1 +1,137 @@
-<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard · Northstar Bank</title><link rel="stylesheet" th:href="@{/styles.css}"></head><body class="app-page"><header class="topbar"><a class="brand" href="/dashboard"><span class="brand-mark">N</span> NORTHSTAR <span>BANK</span></a><form method="post" action="/logout"><button class="logout" type="submit">Sign out ↗</button></form></header><main class="dashboard"><div class="welcome"><div><p class="eyebrow">PERSONAL BANKING</p><h1>Good day, <span th:text="${account.full_name}">Customer</span>.</h1><p class="muted">Here is your account overview.</p></div><div class="account-chip"><span>ACCOUNT NUMBER</span><strong th:text="${account.account_number}">0000000000</strong></div></div><div class="alert success" th:if="${success}" th:text="${success}"></div><div class="alert error" th:if="${error}" th:text="${error}"></div><section class="balance-card"><div><p class="eyebrow light">TOTAL AVAILABLE BALANCE</p><h2>₹ <span th:text="${#numbers.formatDecimal(account.balance,1,'COMMA',2,'POINT')}">0.00</span></h2><p class="balance-note">Your account balance</p></div><div class="balance-orb"></div></section><section class="section-head"><div><p class="eyebrow">QUICK ACTIONS</p><h2>Move your money</h2></div></section><section class="actions"><article class="action-card"><div class="action-icon">＋</div><h3>Deposit</h3><p>Add funds to your account.</p><form method="post" action="/deposit"><label>Amount (₹)<input type="number" name="amount" min="0.01" max="10000000" step="0.01" required placeholder="0.00"></label><button class="primary full">Deposit funds →</button></form></article><article class="action-card"><div class="action-icon">−</div><h3>Withdraw</h3><p>Withdraw from your balance.</p><form method="post" action="/withdraw"><label>Amount (₹)<input type="number" name="amount" min="0.01" max="10000000" step="0.01" required placeholder="0.00"></label><button class="secondary full">Withdraw funds →</button></form></article><article class="action-card"><div class="action-icon">↗</div><h3>Transfer</h3><p>Send money to another account.</p><form method="post" action="/transfer"><label>Recipient account number<input name="recipientAccount" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" required placeholder="10-digit account no."></label><label>Amount (₹)<input type="number" name="amount" min="0.01" max="10000000" step="0.01" required placeholder="0.00"></label><button class="secondary full">Transfer money →</button></form></article></section><section class="history"><div class="section-head"><div><p class="eyebrow">ACCOUNT ACTIVITY</p><h2>Recent transactions</h2></div><span class="muted">Latest 100</span></div><div class="table-wrap"><table><thead><tr><th>TYPE</th><th>DESCRIPTION</th><th>DATE</th><th class="right">AMOUNT</th></tr></thead><tbody><tr th:each="tx : ${transactions}"><td><span class="type" th:text="${tx.transaction_type}">DEPOSIT</span></td><td th:text="${tx.description}">Cash deposit</td><td th:text="${#dates.format(tx.created_at,'dd MMM yyyy, HH:mm')}">Date</td><td class="right amount" th:text="${'₹ ' + #numbers.formatDecimal(tx.amount,1,'COMMA',2,'POINT')}">₹ 0.00</td></tr><tr th:if="${#lists.isEmpty(transactions)}"><td colspan="4" class="empty">No transactions yet. Your activity will appear here.</td></tr></tbody></table></div></section><footer>Northstar Bank · Educational local project · Not a real banking service</footer></main></body></html>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard · Northstar Bank</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body class="app-page">
+<header class="topbar">
+    <a class="brand" href="/dashboard">
+        <span class="brand-mark">N</span> NORTHSTAR <span>BANK</span>
+    </a>
+    <form method="post" action="/logout">
+        <button class="logout" type="submit">Sign out ↗</button>
+    </form>
+</header>
+
+<main class="dashboard">
+    <div class="welcome">
+        <div>
+            <p class="eyebrow">PERSONAL BANKING</p>
+            <h1>Good day, <span th:text="${account.full_name}">Customer</span>.</h1>
+            <p class="muted">Here is your account overview.</p>
+        </div>
+        <div class="account-chip">
+            <span>15-DIGIT ACCOUNT NUMBER</span>
+            <strong th:text="${account.account_number}">000000000000000</strong>
+        </div>
+    </div>
+
+    <div class="alert success" th:if="${success}" th:text="${success}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="balance-card">
+        <div>
+            <p class="eyebrow light">TOTAL AVAILABLE BALANCE</p>
+            <h2>₹ <span th:text="${#numbers.formatDecimal(account.balance,1,'COMMA',2,'POINT')}">0.00</span></h2>
+            <p class="balance-note">Your account balance</p>
+        </div>
+        <div class="balance-orb"></div>
+    </section>
+
+    <section class="section-head">
+        <div>
+            <p class="eyebrow">QUICK ACTIONS</p>
+            <h2>Move your money</h2>
+        </div>
+    </section>
+
+    <section class="actions">
+        <article class="action-card">
+            <div class="action-icon">＋</div>
+            <h3>Deposit</h3>
+            <p>Add funds to your account.</p>
+            <form method="post" action="/deposit">
+                <label>Amount (₹)
+                    <input type="number" name="amount" min="0.01" max="10000000" step="0.01" required placeholder="0.00">
+                </label>
+                <button class="primary full" type="submit">Deposit funds →</button>
+            </form>
+        </article>
+
+        <article class="action-card">
+            <div class="action-icon">−</div>
+            <h3>Withdraw</h3>
+            <p>Withdraw from your balance.</p>
+            <form method="post" action="/withdraw">
+                <label>Amount (₹)
+                    <input type="number" name="amount" min="0.01" max="10000000" step="0.01" required placeholder="0.00">
+                </label>
+                <button class="secondary full" type="submit">Withdraw funds →</button>
+            </form>
+        </article>
+
+        <article class="action-card">
+            <div class="action-icon">↗</div>
+            <h3>Transfer</h3>
+            <p>Send money to another account.</p>
+            <form method="post" action="/transfer">
+                <label>Recipient 15-digit account number
+                    <input
+                        name="recipientAccount"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        pattern="[0-9]{15}"
+                        minlength="15"
+                        maxlength="15"
+                        required
+                        placeholder="Enter 15-digit account number">
+                </label>
+                <label>Amount (₹)
+                    <input type="number" name="amount" min="0.01" max="10000000" step="0.01" required placeholder="0.00">
+                </label>
+                <button class="secondary full" type="submit">Transfer money →</button>
+            </form>
+        </article>
+    </section>
+
+    <section class="history">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">ACCOUNT ACTIVITY</p>
+                <h2>Recent transactions</h2>
+            </div>
+            <span class="muted">Latest 100</span>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>TYPE</th>
+                    <th>DESCRIPTION</th>
+                    <th>DATE</th>
+                    <th class="right">AMOUNT</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tx : ${transactions}">
+                    <td><span class="type" th:text="${tx.transaction_type}">DEPOSIT</span></td>
+                    <td th:text="${tx.description}">Cash deposit</td>
+                    <td th:text="${#dates.format(tx.created_at,'dd MMM yyyy, HH:mm')}">Date</td>
+                    <td class="right amount" th:text="${'₹ ' + #numbers.formatDecimal(tx.amount,1,'COMMA',2,'POINT')}">₹ 0.00</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(transactions)}">
+                    <td colspan="4" class="empty">No transactions yet. Your activity will appear here.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>Northstar Bank · Educational local project · Not a real banking service</footer>
+</main>
+</body>
+</html>
